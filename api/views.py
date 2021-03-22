@@ -15,6 +15,7 @@ from rest_auth.registration.views import RegisterView
 
 class CustomRegisterView(RegisterView):
     serializer_class = MyRegisterSerializer
+    permission_classes = [IsGestionnaire, IsAuthenticated]
 
 
 class UserListView(generics.ListAPIView):

@@ -6,9 +6,11 @@ from django.utils.translation import gettext_lazy as _
 class Role(models.Model):
     type = models.CharField(max_length=128)
 
+    def __str__(self):
+        return self.type
+
 
 class User(AbstractUser):
-    email = None
     role = models.ForeignKey(to=Role, on_delete=models.CASCADE)
     is_staff = True
 
@@ -21,6 +23,9 @@ class Client(models.Model):
     compagny_name = models.CharField(max_length=128)
     client_contrat = models.BooleanField()
 
+    def __str__(self):
+        return '{}-{}'.format(self.first_name, self.last_name)
+
 
 class Contrat(models.Model):
     decription = models.CharField(max_length=128)
@@ -30,9 +35,15 @@ class Contrat(models.Model):
     client = models.ForeignKey(to=Client, on_delete=models.CASCADE, related_name="contrats")
     saler = models.ForeignKey(to=User, on_delete=models.DO_NOTHING, related_name="salers")
 
+    def __str__(self):
+        return '{}-{}'.format(self.decription, self.created_time)
+
 
 class Status(models.Model):
     type = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.type
 
 
 class Event(models.Model):
@@ -44,6 +55,8 @@ class Event(models.Model):
     support = models.ForeignKey(to=User, on_delete=models.DO_NOTHING)
     status = models.ForeignKey(to=Status, on_delete=models.DO_NOTHING)
     contrat = models.OneToOneField(to=Contrat, on_delete=models.CASCADE)
-from django.db import models
+
+    def __str__(self):
+        return '{}-{}'.format(self.title, self.created_time)
 
 # Create your models here.

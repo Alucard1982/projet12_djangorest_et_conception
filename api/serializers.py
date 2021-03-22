@@ -1,4 +1,5 @@
 from rest_auth.registration.serializers import RegisterSerializer
+from rest_auth.serializers import LoginSerializer as RestAuthLoginSerializer
 from rest_framework import serializers
 from api.models import User, Role, Client, Contrat, Event, Status
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -34,6 +35,10 @@ class MyRegisterSerializer(RegisterSerializer):
         }
 
 
+class LoginSerializer(RestAuthLoginSerializer):
+    email = None
+
+
 class UserSerializer(serializers.ModelSerializer):
     role = RoleSerializer(read_only=True)
 
@@ -49,7 +54,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ContratSerializer(serializers.ModelSerializer):
     saler = UserSerializer(read_only=True)
-    client = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Client.objects.all())
 
     class Meta:
         model = Contrat
@@ -65,7 +69,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = ('id', 'title', 'description', 'date_event',
-                  'created_time', 'status', 'support', 'client',)
+                  'created_time', 'status', 'support', 'client', 'contrat')
 
     def create(self, validated_data):
         status_data = validated_data.get("status")
@@ -80,4 +84,4 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = ('id', 'first_name', 'last_name', 'email', 'phone',
-                  'compagny_name', 'client_contrat', 'saler')
+                  'compagny_name', 'client_contrat')
